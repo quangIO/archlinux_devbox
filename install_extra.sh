@@ -3,7 +3,7 @@
 #begin system-lang
 echo "Installing system programming languages"
 sudo pacman -Syu julia rustup ghc ponyc radare2 pwndbg --needed --noconfirm
-sudo echo "source /usr/share/pwndbg/gdbinit.py" >> /etc/gdb/gdbinit
+echo "source /usr/share/pwndbg/gdbinit.py" | sudo tee /etc/gdb/gdbinit
 #end system-lang
 
 #begin doom-emacs

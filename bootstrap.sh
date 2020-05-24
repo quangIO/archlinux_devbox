@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
 echo "Setting up mirrorlist and base-devel"
-sudo echo -e "Server = http://mirror.es.its.nyu.edu/archlinux/$repo/os/\$arch\n$(cat /etc/pacman.d/mirrorlist)" > /etc/pacman.d/mirrorlist
+echo -e "Server = http://mirror.es.its.nyu.edu/archlinux/\$repo/os/\$arch\n$(cat /etc/pacman.d/mirrorlist)" | sudo tee /etc/pacman.d/mirrorlist
 sudo pacman -Syu --noconfirm base-devel git emacs cmake fish sd fd lsd tmux fzf ripgrep tree
 chmod +x install_extra.sh
+
+#begin fish
+echo "Setting up fish shell"
+sudo chsh -s "$(which fish)" "$(whoami)"
+#end fish
 
 #begin yay
 if ! command -v yay >/dev/null; then
@@ -12,9 +17,9 @@ if ! command -v yay >/dev/null; then
     trap finish EXIT                    # ...no matter how you exist
 
     git clone https://aur.archlinux.org/yay.git "$tmp"
-    pushd "$tmp"
+    pushd "$tmp" || exit
     makepkg -sri --noconfirm --needed
-    popd
+    popd || exit
 
     if ! command -v yay >/dev/null; then
         >&2 echo "yay failed to install"
@@ -22,8 +27,3 @@ if ! command -v yay >/dev/null; then
     fi
 fi
 #end yay
-
-#begin fish
-echo "Setting up fish shell"
-sudo chsh -s $(which fish) $(whoami)
-#end fish
